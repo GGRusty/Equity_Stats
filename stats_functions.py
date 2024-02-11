@@ -4,7 +4,6 @@ import numpy as np
 import statsmodels.api as sm
 import pandas_datareader as pdr
 from datetime import datetime, timedelta
-import pandas_market_calendars as mcal
 import warnings
 
 warnings.simplefilter(action="ignore", category=FutureWarning)
@@ -82,9 +81,8 @@ def get_market_return(market_ticker="^GSPC", period="10y"):
             ) - 1
             annual_returns.append(
                 1 + yearly_return
-            )  # Store 1 + return for geometric mean calculation
+            )
 
-    # Calculate the geometric mean of annual returns
     # we use Geometric mean to account for compounding
     geom_mean_annual_return = np.prod(annual_returns) ** (1 / len(annual_returns)) - 1
 
@@ -108,5 +106,22 @@ def calculate_capm(
     )
     rf_rate = get_rf_rate(treasury_type=treasury_type)
     market_rate = get_market_return(market_ticker=index, period=market_period)
-    capm = rf_rate + beta * (market_rate - rf_rate)
+    equity_risk_premium = market_rate - rf_rate
+    capm = rf_rate + (beta * equity_risk_premium)
     return capm
+
+
+def get_russell1000_tickers():
+    url = "https://en.wikipedia.org/wiki/Russell_1000_Index"
+    tables = pd.read_html(url)  # This returns a list of all tables on the page
+    sp500_table = tables[2]  # Assuming the first table is the one we want
+    tickers = sp500_table["Ticker"].tolist()
+    return tickers
+
+
+def get_sp500_tickers():
+    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+    tables = pd.read_html(url)  # This returns a list of all tables on the page
+    sp500_table = tables[0]  # Assuming the first table is the one we want
+    tickers = sp500_table["Symbol"].tolist()
+    return tickers
