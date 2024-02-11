@@ -113,15 +113,15 @@ def calculate_capm(
 
 def get_russell1000_tickers():
     url = "https://en.wikipedia.org/wiki/Russell_1000_Index"
-    tables = pd.read_html(url)  # This returns a list of all tables on the page
-    sp500_table = tables[2]  # Assuming the first table is the one we want
+    tables = pd.read_html(url) 
+    sp500_table = tables[2]  
     tickers = sp500_table["Ticker"].tolist()
     return tickers
 
 
 def get_sp500_tickers():
     url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
-    tables = pd.read_html(url)  # This returns a list of all tables on the page
-    sp500_table = tables[0]  # Assuming the first table is the one we want
+    tables = pd.read_html(url)
+    sp500_table = tables[0]
     tickers = sp500_table["Symbol"].tolist()
     return tickers
